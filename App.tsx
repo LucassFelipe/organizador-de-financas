@@ -1,0 +1,13 @@
+import "./global.css"
+import { StatusBar } from "expo-status-bar"
+import { Text, View } from "react-native"
+
+export default function App() {
+  return (
+    <View className="flex-1 items-center justify-center bg-light">
+      <Text className="text-3xl font-bold text-primary">Organizador de Finanças</Text>
+      <Text className="text-secondary mt-2">Bootstrap + NativeWind funcionando</Text>
+      <StatusBar style="dark" />
+    </View>
+  )
+}
