@@ -1,4 +1,5 @@
 import { Pressable, Text, View } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 export type Aba = "mes" | "novo" | "extrato"
 
@@ -9,8 +10,9 @@ const ABAS: { chave: Aba; rotulo: string }[] = [
 ]
 
 export default function TabBar({ aba, onChange }: { aba: Aba; onChange: (a: Aba) => void }) {
+  const insets = useSafeAreaInsets()
   return (
-    <View className="flex-row border-t border-gray-200 bg-white">
+    <View className="flex-row border-t border-gray-200 bg-white" style={{ paddingBottom: insets.bottom }}>
       {ABAS.map((a) => (
         <Pressable
           key={a.chave}
