@@ -1,10 +1,123 @@
-import { Text, View } from "react-native"
-import type { Dados } from "../lib/financas"
+import { useState } from "react"
+import { Alert, Pressable, ScrollView, Switch, Text, TextInput, View } from "react-native"
+import { hojeISO, novoId, parseValor } from "../lib/financas"
+import type { Dados, Entrada, GastoAvulso, GastoParcelado } from "../lib/financas"
 
 export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar: (d: Dados) => void }) {
+  const [ehEntrada, setEhEntrada] = useState(true)
+  const [descricao, setDescricao] = useState("")
+  const [valor, setValor] = useState("")
+  const [data, setData] = useState(hojeISO())
+  const [parcelado, setParcelado] = useState(false)
+  const [parcelas, setParcelas] = useState("1")
+  const [erros, setErros] = useState<Record<string, string>>({})
+
+  const salvar = () => {
+    const novosErros: Record<string, string> = {}
+    if (!descricao.trim()) novosErros.descricao = "Informe uma descrição"
+    const v = parseValor(valor)
+    if (v === null || v <= 0) novosErros.valor = "Informe um valor maior que zero"
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(data) || isNaN(Date.parse(data))) novosErros.data = "Data inválida (use AAAA-MM-DD)"
+    const n = Number(parcelas)
+    if (parcelado && (!Number.isInteger(n) || n < 1)) novosErros.parcelas = "Informe um número inteiro de parcelas (≥ 1)"
+    if (Object.keys(novosErros).length > 0) {
+      setErros(novosErros)
+      return
+    }
+    setErros({})
+
+    const entradas: Entrada[] = ehEntrada
+      ? [...dados.entradas, { id: novoId(), descricao: descricao.trim(), valor: v as number, data }]
+      : dados.entradas
+
+    const gasto: GastoAvulso | GastoParcelado | null = ehEntrada
+      ? null
+      : parcelado && n > 1
+        ? { id: novoId(), tipo: "parcelado", descricao: descricao.trim(), valorTotal: v as number, parcelas: n, dataInicio: data }
+        : { id: novoId(), tipo: "avulso", descricao: descricao.trim(), valor: v as number, data }
+
+    onSalvar({ entradas, gastos: gasto ? [...dados.gastos, gasto] : dados.gastos })
+
+    setDescricao("")
+    setValor("")
+    setParcelado(false)
+    setParcelas("1")
+    Alert.alert("Salvo", ehEntrada ? "Entrada registrada." : "Gasto registrado.")
+  }
+
+  const campoErro = (chave: string) => erros[chave] ? <Text className="text-danger mt-1 text-sm">{erros[chave]}</Text> : null
+
   return (
-    <View className="flex-1 p-4">
-      <Text className="text-xl font-bold">Novo</Text>
-    </View>
+    <ScrollView className="flex-1 p-4" keyboardShouldPersistTaps="handled">
+      <Text className="text-xl font-bold mb-4">Novo lançamento</Text>
+
+      <View className="flex-row mb-4">
+        <Pressable
+          onPress={() => setEhEntrada(true)}
+          className={`flex-1 py-2 rounded-l border ${ehEntrada ? "bg-primary border-primary" : "bg-white border-gray-300"}`}
+        >
+          <Text className={`text-center font-bold ${ehEntrada ? "text-white" : "text-gray-600"}`}>Entrada</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setEhEntrada(false)}
+          className={`flex-1 py-2 rounded-r border ${!ehEntrada ? "bg-primary border-primary" : "bg-white border-gray-300"}`}
+        >
+          <Text className={`text-center font-bold ${!ehEntrada ? "text-white" : "text-gray-600"}`}>Gasto</Text>
+        </Pressable>
+      </View>
+
+      <Text className="mb-1">Descrição</Text>
+      <TextInput
+        value={descricao}
+        onChangeText={setDescricao}
+        placeholder="Ex.: Mercado, Salário, Celular"
+        className="border border-gray-300 rounded p-3 mb-3 bg-white"
+      />
+      {campoErro("descricao")}
+
+      <Text className="mb-1">Valor (R$)</Text>
+      <TextInput
+        value={valor}
+        onChangeText={setValor}
+        placeholder="0,00"
+        keyboardType="decimal-pad"
+        className="border border-gray-300 rounded p-3 mb-3 bg-white"
+      />
+      {campoErro("valor")}
+
+      <Text className="mb-1">Data</Text>
+      <TextInput
+        value={data}
+        onChangeText={setData}
+        placeholder="AAAA-MM-DD"
+        autoCapitalize="none"
+        className="border border-gray-300 rounded p-3 mb-3 bg-white"
+      />
+      {campoErro("data")}
+
+      {!ehEntrada && (
+        <View className="flex-row items-center justify-between mb-3">
+          <Text>Parcelado</Text>
+          <Switch value={parcelado} onValueChange={setParcelado} />
+        </View>
+      )}
+
+      {!ehEntrada && parcelado && (
+        <View className="mb-4">
+          <Text className="mb-1">Número de parcelas</Text>
+          <TextInput
+            value={parcelas}
+            onChangeText={setParcelas}
+            keyboardType="number-pad"
+            className="border border-gray-300 rounded p-3 mb-3 bg-white"
+          />
+          {campoErro("parcelas")}
+        </View>
+      )}
+
+      <Pressable onPress={salvar} className="bg-primary py-3 rounded mb-4">
+        <Text className="text-white text-center font-bold">Salvar</Text>
+      </Pressable>
+    </ScrollView>
   )
 }
