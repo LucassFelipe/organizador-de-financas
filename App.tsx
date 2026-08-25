@@ -2,7 +2,7 @@ import "./global.css"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useEffect, useState } from "react"
 import { StatusBar } from "expo-status-bar"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 import { Alert } from "react-native"
 import TabBar, { type Aba } from "./src/components/TabBar"
 import MesScreen from "./src/screens/MesScreen"
@@ -37,15 +37,22 @@ export default function App() {
     }
   }
 
-  if (!pronto) return <SafeAreaView className="flex-1 bg-light" />
+  if (!pronto)
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView className="flex-1 bg-light" />
+      </SafeAreaProvider>
+    )
 
   return (
-    <SafeAreaView className="flex-1 bg-light" edges={["top"]}>
-      <StatusBar style="dark" />
-      {aba === "mes" && <MesScreen dados={dados} />}
-      {aba === "novo" && <NovoScreen dados={dados} onSalvar={atualizar} />}
-      {aba === "extrato" && <ExtratoScreen dados={dados} />}
-      <TabBar aba={aba} onChange={setAba} />
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1 bg-light" edges={["top"]}>
+        <StatusBar style="dark" />
+        {aba === "mes" && <MesScreen dados={dados} />}
+        {aba === "novo" && <NovoScreen dados={dados} onSalvar={atualizar} />}
+        {aba === "extrato" && <ExtratoScreen dados={dados} />}
+        <TabBar aba={aba} onChange={setAba} />
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
