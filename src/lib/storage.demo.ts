@@ -3,8 +3,8 @@ import { carregarDados, dadosVazios, salvarDados } from "./storage.ts"
 import type { Dados } from "./financas.ts"
 
 const dados: Dados = {
-  entradas: [{ id: "x", descricao: "Salário", valor: 3000, data: "2026-08-05" }],
-  gastos: [{ id: "y", tipo: "avulso", descricao: "Mercado", valor: 400, data: "2026-08-10" }],
+  entradas: [{ id: "x", nome: "Salário", valor: 3000, data: "2026-08-05" }],
+  gastos: [{ id: "y", tipo: "avulso", nome: "Mercado", valor: 400, data: "2026-08-10" }],
 }
 
 const texto = salvarDados(dados)

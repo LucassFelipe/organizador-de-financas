@@ -1,9 +1,9 @@
-export type Entrada = { id: string; descricao: string; valor: number; data: string }
-export type GastoAvulso = { id: string; tipo: "avulso"; descricao: string; valor: number; data: string }
-export type GastoParcelado = { id: string; tipo: "parcelado"; descricao: string; valorTotal: number; parcelas: number; dataInicio: string }
+export type Entrada = { id: string; nome: string; descricao?: string; valor: number; data: string }
+export type GastoAvulso = { id: string; tipo: "avulso"; nome: string; descricao?: string; valor: number; data: string }
+export type GastoParcelado = { id: string; tipo: "parcelado"; nome: string; descricao?: string; valorTotal: number; parcelas: number; dataInicio: string }
 export type Gasto = GastoAvulso | GastoParcelado
 export type Dados = { entradas: Entrada[]; gastos: Gasto[] }
-export type Lancamento = { data: string; descricao: string; valor: number; ehEntrada: boolean; parcela?: string }
+export type Lancamento = { id: string; origem: "entrada" | "avulso" | "parcelado"; refId: string; data: string; nome: string; descricao?: string; valor: number; ehEntrada: boolean; parcela?: string; parcelaIndice?: number; parcelaTotal?: number }
 
 export const STORAGE_KEY = "financas:v1"
 
@@ -93,19 +93,24 @@ export function saldoAcumulado(dados: Dados, mes: string): number {
 
 export function gerarExtrato(dados: Dados): Lancamento[] {
   const linhas: Lancamento[] = [
-    ...dados.entradas.map((e) => ({ data: e.data, descricao: e.descricao, valor: e.valor, ehEntrada: true })),
+    ...dados.entradas.map((e) => ({
+      id: e.id, origem: "entrada" as const, refId: e.id,
+      data: e.data, nome: e.nome, descricao: e.descricao, valor: e.valor, ehEntrada: true,
+    })),
     ...dados.gastos
       .filter((g): g is GastoAvulso => g.tipo === "avulso")
-      .map((g) => ({ data: g.data, descricao: g.descricao, valor: g.valor, ehEntrada: false })),
+      .map((g) => ({
+        id: g.id, origem: "avulso" as const, refId: g.id,
+        data: g.data, nome: g.nome, descricao: g.descricao, valor: g.valor, ehEntrada: false,
+      })),
     ...dados.gastos
       .filter((g): g is GastoParcelado => g.tipo === "parcelado")
       .flatMap((g) =>
-        parcelasDe(g).map((p) => ({
-          data: `${p.mes}-01`,
-          descricao: g.descricao,
-          valor: p.valor,
-          ehEntrada: false,
-          parcela: `${p.indice}/${p.total}`,
+        parcelasDe(g).map((p, idx) => ({
+          id: `${g.id}-${idx}`, origem: "parcelado" as const, refId: g.id,
+          data: `${p.mes}-01`, nome: g.nome, descricao: g.descricao,
+          valor: p.valor, ehEntrada: false,
+          parcela: `${p.indice}/${p.total}`, parcelaIndice: p.indice, parcelaTotal: p.total,
         }))
       ),
   ]

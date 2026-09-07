@@ -5,6 +5,7 @@ import type { Dados, Entrada, GastoAvulso, GastoParcelado } from "../lib/financa
 
 export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar: (d: Dados) => void }) {
   const [ehEntrada, setEhEntrada] = useState(true)
+  const [nome, setNome] = useState("")
   const [descricao, setDescricao] = useState("")
   const [valor, setValor] = useState("")
   const [data, setData] = useState(hojeISO())
@@ -14,7 +15,7 @@ export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar
 
   const salvar = () => {
     const novosErros: Record<string, string> = {}
-    if (!descricao.trim()) novosErros.descricao = "Informe uma descrição"
+    if (!nome.trim()) novosErros.nome = "Informe o nome da movimentação"
     const v = parseValor(valor)
     if (v === null || v <= 0) novosErros.valor = "Informe um valor maior que zero"
     if (!/^\d{4}-\d{2}-\d{2}$/.test(data) || isNaN(Date.parse(data))) novosErros.data = "Data inválida (use AAAA-MM-DD)"
@@ -26,18 +27,21 @@ export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar
     }
     setErros({})
 
+    const desc = descricao.trim() || undefined
+
     const entradas: Entrada[] = ehEntrada
-      ? [...dados.entradas, { id: novoId(), descricao: descricao.trim(), valor: v as number, data }]
+      ? [...dados.entradas, { id: novoId(), nome: nome.trim(), descricao: desc, valor: v as number, data }]
       : dados.entradas
 
     const gasto: GastoAvulso | GastoParcelado | null = ehEntrada
       ? null
       : parcelado && n > 1
-        ? { id: novoId(), tipo: "parcelado", descricao: descricao.trim(), valorTotal: v as number, parcelas: n, dataInicio: data }
-        : { id: novoId(), tipo: "avulso", descricao: descricao.trim(), valor: v as number, data }
+        ? { id: novoId(), tipo: "parcelado", nome: nome.trim(), descricao: desc, valorTotal: v as number, parcelas: n, dataInicio: data }
+        : { id: novoId(), tipo: "avulso", nome: nome.trim(), descricao: desc, valor: v as number, data }
 
     onSalvar({ entradas, gastos: gasto ? [...dados.gastos, gasto] : dados.gastos })
 
+    setNome("")
     setDescricao("")
     setValor("")
     setParcelado(false)
@@ -66,14 +70,22 @@ export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar
         </Pressable>
       </View>
 
-      <Text className="mb-1">Descrição</Text>
+      <Text className="mb-1">Nome da movimentação *</Text>
+      <TextInput
+        value={nome}
+        onChangeText={setNome}
+        placeholder="Ex.: Salário, Mercado, Celular"
+        className="border border-gray-300 rounded p-3 mb-1 bg-white"
+      />
+      {campoErro("nome")}
+
+      <Text className="mb-1 text-gray-500">Descrição (opcional)</Text>
       <TextInput
         value={descricao}
         onChangeText={setDescricao}
-        placeholder="Ex.: Mercado, Salário, Celular"
+        placeholder="Detalhes adicionais"
         className="border border-gray-300 rounded p-3 mb-3 bg-white"
       />
-      {campoErro("descricao")}
 
       <Text className="mb-1">Valor (R$)</Text>
       <TextInput

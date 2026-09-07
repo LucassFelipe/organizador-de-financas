@@ -14,9 +14,9 @@ import {
 } from "./financas.ts"
 import type { Dados, GastoParcelado } from "./financas.ts"
 
-const entrada = { id: novoId(), descricao: "Salário", valor: 3000, data: "2026-08-05" }
-const avulso = { id: novoId(), tipo: "avulso" as const, descricao: "Mercado", valor: 400, data: "2026-08-10" }
-const parc: GastoParcelado = { id: novoId(), tipo: "parcelado", descricao: "Celular", valorTotal: 1000, parcelas: 10, dataInicio: "2026-08-01" }
+const entrada = { id: novoId(), nome: "Salário", valor: 3000, data: "2026-08-05" }
+const avulso = { id: novoId(), tipo: "avulso" as const, nome: "Mercado", valor: 400, data: "2026-08-10" }
+const parc: GastoParcelado = { id: novoId(), tipo: "parcelado", nome: "Celular", valorTotal: 1000, parcelas: 10, dataInicio: "2026-08-01" }
 
 const dados: Dados = { entradas: [entrada], gastos: [avulso, parc] }
 
@@ -48,5 +48,7 @@ const extrato = gerarExtrato(dados)
 assert.equal(extrato.length, 12) // 1 entrada + 1 avulso + 10 parcelas
 assert.equal(extrato.filter((l) => l.parcela).length, 10)
 assert.equal(extrato[0].parcela, "1/10") // ponytail: brief tinha extrato[1], mas a parcela de 2026-08-01 ordena antes
+assert.equal(extrato[0].nome, "Celular")
+assert.equal(extrato[0].origem, "parcelado")
 
 console.log("OK: financas")
