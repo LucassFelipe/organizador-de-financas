@@ -1,10 +1,25 @@
-import { Text, View } from "react-native"
+import { Alert, Pressable, Text, View } from "react-native"
 import { formatarBRL } from "../lib/financas"
 import type { Lancamento } from "../lib/financas"
 
-export default function LinhaLancamento({ item }: { item: Lancamento }) {
+type Props = {
+  item: Lancamento
+  onExcluir?: (lancamento: Lancamento) => void
+  onEditar?: (lancamento: Lancamento) => void
+}
+
+export default function LinhaLancamento({ item, onExcluir, onEditar }: Props) {
+  const pressionar = () => {
+    if (!onExcluir && !onEditar) return
+    const opcoes: { text: string; onPress?: () => void; style?: "cancel" | "destructive" }[] = []
+    if (onEditar) opcoes.push({ text: "Editar", onPress: () => onEditar(item) })
+    if (onExcluir) opcoes.push({ text: "Excluir", style: "destructive", onPress: () => onExcluir(item) })
+    opcoes.push({ text: "Cancelar", style: "cancel" })
+    Alert.alert(item.nome, item.parcela ? `Parcela ${item.parcela}` : undefined, opcoes)
+  }
+
   return (
-    <View className="bg-white rounded border border-gray-200 p-3 mb-2">
+    <Pressable onPress={pressionar} className="bg-white rounded border border-gray-200 p-3 mb-2">
       <View className="flex-row justify-between items-center">
         <View className="flex-1 mr-2">
           <Text className="font-medium">
@@ -18,6 +33,6 @@ export default function LinhaLancamento({ item }: { item: Lancamento }) {
         </Text>
       </View>
       <Text className="text-gray-500 text-xs mt-1">{item.data}</Text>
-    </View>
+    </Pressable>
   )
 }

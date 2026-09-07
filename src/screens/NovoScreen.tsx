@@ -1,9 +1,16 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Alert, Pressable, ScrollView, Switch, Text, TextInput, View } from "react-native"
-import { hojeISO, novoId, parseValor } from "../lib/financas"
-import type { Dados, Entrada, GastoAvulso, GastoParcelado } from "../lib/financas"
+import { editarEntrada, editarGasto, hojeISO, novoId, parseValor } from "../lib/financas"
+import type { Dados, Entrada, GastoAvulso, GastoParcelado, Lancamento } from "../lib/financas"
 
-export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar: (d: Dados) => void }) {
+type Props = {
+  dados: Dados
+  onSalvar: (d: Dados) => void
+  editando?: Lancamento | null
+  onCancelarEdicao?: () => void
+}
+
+export default function NovoScreen({ dados, onSalvar, editando, onCancelarEdicao }: Props) {
   const [ehEntrada, setEhEntrada] = useState(true)
   const [nome, setNome] = useState("")
   const [descricao, setDescricao] = useState("")
@@ -12,6 +19,19 @@ export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar
   const [parcelado, setParcelado] = useState(false)
   const [parcelas, setParcelas] = useState("1")
   const [erros, setErros] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    if (!editando) return
+    setEhEntrada(editando.ehEntrada)
+    setNome(editando.nome)
+    setDescricao(editando.descricao ?? "")
+    setValor(String(editando.valor))
+    setData(editando.data)
+    if (editando.origem === "parcelado" && editando.parcelaTotal && editando.parcelaTotal > 1) {
+      setParcelado(true)
+      setParcelas(String(editando.parcelaTotal))
+    }
+  }, [editando])
 
   const salvar = () => {
     const novosErros: Record<string, string> = {}
@@ -28,6 +48,20 @@ export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar
     setErros({})
 
     const desc = descricao.trim() || undefined
+
+    if (editando) {
+      if (editando.origem === "entrada") {
+        onSalvar(editarEntrada(dados, editando.refId, { nome: nome.trim(), descricao: desc, valor: v as number, data }))
+      } else {
+        if (editando.origem === "parcelado") {
+          onSalvar(editarGasto(dados, editando.refId, { nome: nome.trim(), descricao: desc, valorTotal: v as number, parcelas: n, dataInicio: data }))
+        } else {
+          onSalvar(editarGasto(dados, editando.refId, { nome: nome.trim(), descricao: desc, valor: v as number, data }))
+        }
+      }
+      Alert.alert("Atualizado", "Registro atualizado.")
+      return
+    }
 
     const entradas: Entrada[] = ehEntrada
       ? [...dados.entradas, { id: novoId(), nome: nome.trim(), descricao: desc, valor: v as number, data }]
@@ -53,7 +87,14 @@ export default function NovoScreen({ dados, onSalvar }: { dados: Dados; onSalvar
 
   return (
     <ScrollView className="flex-1 p-4" keyboardShouldPersistTaps="handled">
-      <Text className="text-xl font-bold mb-4">Novo lançamento</Text>
+      <View className="flex-row items-center justify-between mb-4">
+        <Text className="text-xl font-bold">{editando ? "Editar lançamento" : "Novo lançamento"}</Text>
+        {editando && onCancelarEdicao && (
+          <Pressable onPress={onCancelarEdicao} className="bg-secondary px-3 py-1 rounded">
+            <Text className="text-white text-sm">Cancelar</Text>
+          </Pressable>
+        )}
+      </View>
 
       <View className="flex-row mb-4">
         <Pressable

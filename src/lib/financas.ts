@@ -116,3 +116,29 @@ export function gerarExtrato(dados: Dados): Lancamento[] {
   ]
   return linhas.sort((a, b) => a.data.localeCompare(b.data))
 }
+
+export function excluirRegistro(dados: Dados, lancamento: Lancamento): Dados {
+  if (lancamento.origem === "entrada") {
+    return { ...dados, entradas: dados.entradas.filter((e) => e.id !== lancamento.refId) }
+  }
+  return { ...dados, gastos: dados.gastos.filter((g) => g.id !== lancamento.refId) }
+}
+
+export function editarEntrada(dados: Dados, id: string, updates: Partial<Omit<Entrada, "id">>): Dados {
+  return {
+    ...dados,
+    entradas: dados.entradas.map((e) => (e.id === id ? { ...e, ...updates } : e)),
+  }
+}
+
+export function editarGasto(dados: Dados, id: string, updates: Partial<Omit<GastoAvulso, "id" | "tipo">> | Partial<Omit<GastoParcelado, "id" | "tipo">>): Dados {
+  return {
+    ...dados,
+    gastos: dados.gastos.map((g) => (g.id === id ? { ...g, ...updates } : g)),
+  }
+}
+
+export function obterRegistro(dados: Dados, lancamento: Lancamento): Entrada | Gasto | undefined {
+  if (lancamento.origem === "entrada") return dados.entradas.find((e) => e.id === lancamento.refId)
+  return dados.gastos.find((g) => g.id === lancamento.refId)
+}

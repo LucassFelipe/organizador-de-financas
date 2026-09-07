@@ -11,7 +11,7 @@ import {
   somaEntradasDoMes,
   somaGastosDoMes,
 } from "../lib/financas"
-import type { Dados } from "../lib/financas"
+import type { Dados, Lancamento } from "../lib/financas"
 
 function mudarMes(mes: string, delta: number): string {
   const [ano, m] = mes.split("-").map(Number)
@@ -19,7 +19,13 @@ function mudarMes(mes: string, delta: number): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
 }
 
-export default function MesScreen({ dados }: { dados: Dados }) {
+type Props = {
+  dados: Dados
+  onExcluir?: (lancamento: Lancamento) => void
+  onEditar?: (lancamento: Lancamento) => void
+}
+
+export default function MesScreen({ dados, onExcluir, onEditar }: Props) {
   const [mes, setMes] = useState(mesAtual())
   const linhas = gerarExtrato(dados).filter((l) => mesDeData(l.data) === mes)
   const entradas = somaEntradasDoMes(dados, mes)
@@ -57,7 +63,7 @@ export default function MesScreen({ dados }: { dados: Dados }) {
         data={linhas}
         keyExtractor={(l, i) => `${l.data}-${i}`}
         ListEmptyComponent={<Text className="text-gray-400 text-center mt-8">Nenhum lançamento neste mês</Text>}
-        renderItem={({ item }) => <LinhaLancamento item={item} />}
+        renderItem={({ item }) => <LinhaLancamento item={item} onExcluir={onExcluir} onEditar={onEditar} />}
       />
     </View>
   )
