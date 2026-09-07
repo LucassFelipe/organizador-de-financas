@@ -73,7 +73,7 @@ export default function NovoScreen({ dados, onSalvar, editando, onCancelarEdicao
         ? { id: novoId(), tipo: "parcelado", nome: nome.trim(), descricao: desc, valorTotal: v as number, parcelas: n, dataInicio: data }
         : { id: novoId(), tipo: "avulso", nome: nome.trim(), descricao: desc, valor: v as number, data }
 
-    onSalvar({ entradas, gastos: gasto ? [...dados.gastos, gasto] : dados.gastos })
+    onSalvar({ ...dados, entradas, gastos: gasto ? [...dados.gastos, gasto] : dados.gastos })
 
     setNome("")
     setDescricao("")
