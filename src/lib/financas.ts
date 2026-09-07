@@ -21,9 +21,9 @@ export function mesDeData(data: string): string {
 }
 
 export function formatarMes(mes: string): string {
-  const nomes = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
+  const nomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
   const [ano, m] = mes.split("-")
-  return `${nomes[Number(m) - 1]}/${ano}`
+  return `${nomes[Number(m) - 1]} de ${ano}`
 }
 
 export function novoId(): string {

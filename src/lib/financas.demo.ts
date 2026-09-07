@@ -22,7 +22,7 @@ const dados: Dados = { entradas: [entrada], gastos: [avulso, parc] }
 
 assert.equal(mesDeData("2026-08-15"), "2026-08")
 assert.equal(mesAtual().length, 7)
-assert.equal(formatarMes("2026-08"), "ago/2026")
+assert.equal(formatarMes("2026-08"), "Agosto de 2026")
 assert.equal(parseValor("12,50"), 12.5)
 assert.equal(parseValor("0"), 0)
 assert.equal(parseValor("abc"), null)
