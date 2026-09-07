@@ -66,7 +66,7 @@ export default function App() {
     <SafeAreaProvider>
       <SafeAreaView className="flex-1 bg-light" edges={["top"]}>
         <StatusBar style="dark" />
-        {aba === "mes" && <MesScreen dados={dados} onExcluir={handleExcluir} onEditar={handleEditar} />}
+        {aba === "mes" && <MesScreen dados={dados} onAtualizar={atualizar} onExcluir={handleExcluir} onEditar={handleEditar} />}
         {aba === "novo" && (
           <NovoScreen
             dados={dados}

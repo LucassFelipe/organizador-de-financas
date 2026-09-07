@@ -6,10 +6,12 @@ export function carregarDados(texto: string | null): Dados {
   if (!texto) return dadosVazios
   try {
     const p = JSON.parse(texto) as Partial<Dados> | null
-    return {
+    const base: Dados = {
       entradas: Array.isArray(p?.entradas) ? p.entradas : [],
       gastos: Array.isArray(p?.gastos) ? p.gastos : [],
     }
+    if (typeof p?.salarioBase === "number" && p.salarioBase > 0) base.salarioBase = p.salarioBase
+    return base
   } catch {
     return dadosVazios
   }

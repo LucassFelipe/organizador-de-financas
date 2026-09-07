@@ -2,7 +2,7 @@ export type Entrada = { id: string; nome: string; descricao?: string; valor: num
 export type GastoAvulso = { id: string; tipo: "avulso"; nome: string; descricao?: string; valor: number; data: string }
 export type GastoParcelado = { id: string; tipo: "parcelado"; nome: string; descricao?: string; valorTotal: number; parcelas: number; dataInicio: string }
 export type Gasto = GastoAvulso | GastoParcelado
-export type Dados = { entradas: Entrada[]; gastos: Gasto[] }
+export type Dados = { entradas: Entrada[]; gastos: Gasto[]; salarioBase?: number }
 export type Lancamento = { id: string; origem: "entrada" | "avulso" | "parcelado"; refId: string; data: string; nome: string; descricao?: string; valor: number; ehEntrada: boolean; parcela?: string; parcelaIndice?: number; parcelaTotal?: number }
 
 export const STORAGE_KEY = "financas:v1"
@@ -141,4 +141,17 @@ export function editarGasto(dados: Dados, id: string, updates: Partial<Omit<Gast
 export function obterRegistro(dados: Dados, lancamento: Lancamento): Entrada | Gasto | undefined {
   if (lancamento.origem === "entrada") return dados.entradas.find((e) => e.id === lancamento.refId)
   return dados.gastos.find((g) => g.id === lancamento.refId)
+}
+
+export function temSalarioNoMes(dados: Dados, mes: string): boolean {
+  return dados.entradas.some((e) => e.nome === "Salário" && mesDeData(e.data) === mes)
+}
+
+export function adicionarSalario(dados: Dados, mes: string): Dados {
+  if (!dados.salarioBase || dados.salarioBase <= 0) return dados
+  if (temSalarioNoMes(dados, mes)) return dados
+  return {
+    ...dados,
+    entradas: [...dados.entradas, { id: novoId(), nome: "Salário", valor: dados.salarioBase, data: `${mes}-01` }],
+  }
 }

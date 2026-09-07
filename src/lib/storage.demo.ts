@@ -14,5 +14,7 @@ assert.deepEqual(carregarDados(null), dadosVazios)
 assert.deepEqual(carregarDados("lixo"), dadosVazios)
 assert.deepEqual(carregarDados('{"entradas":null,"gastos":{}}'), dadosVazios)
 assert.deepEqual(carregarDados(""), dadosVazios)
+assert.equal(carregarDados(null).salarioBase, undefined)
+assert.equal(carregarDados('{"entradas":[],"gastos":[],"salarioBase":5000}').salarioBase, 5000)
 
 console.log("OK: storage")
