@@ -2,8 +2,9 @@ import "./global.css"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useEffect, useState } from "react"
 import { StatusBar } from "expo-status-bar"
+import * as NavigationBar from "expo-navigation-bar"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
-import { Alert } from "react-native"
+import { Alert, Platform } from "react-native"
 import TabBar, { type Aba } from "./src/components/TabBar"
 import MesScreen from "./src/screens/MesScreen"
 import NovoScreen from "./src/screens/NovoScreen"
@@ -19,6 +20,7 @@ export default function App() {
   const [editando, setEditando] = useState<Lancamento | null>(null)
 
   useEffect(() => {
+    if (Platform.OS === "android") NavigationBar.setStyle("dark")
     AsyncStorage.getItem(STORAGE_KEY)
       .then((texto) => setDados(carregarDados(texto)))
       .catch(() => {
