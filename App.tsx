@@ -3,9 +3,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useEffect, useState } from "react"
 import { StatusBar } from "expo-status-bar"
 import * as NavigationBar from "expo-navigation-bar"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 import { Alert, Platform } from "react-native"
 import TabBar, { type Aba } from "./src/components/TabBar"
+import SwipeableArea from "./src/components/SwipeableArea"
 import MesScreen from "./src/screens/MesScreen"
 import NovoScreen from "./src/screens/NovoScreen"
 import ExtratoScreen from "./src/screens/ExtratoScreen"
@@ -57,29 +59,42 @@ export default function App() {
     setAba("extrato")
   }
 
+  const handleTrocarAba = (direcao: number) => {
+    const ordem: Aba[] = ["mes", "novo", "extrato"]
+    const idx = ordem.indexOf(aba)
+    const proximo = idx + direcao
+    if (proximo >= 0 && proximo < ordem.length) setAba(ordem[proximo])
+  }
+
   if (!pronto)
     return (
-      <SafeAreaProvider>
-        <SafeAreaView className="flex-1 bg-bg" />
-      </SafeAreaProvider>
+      <GestureHandlerRootView className="flex-1">
+        <SafeAreaProvider>
+          <SafeAreaView className="flex-1 bg-bg" />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     )
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView className="flex-1 bg-bg" edges={["top"]}>
-        <StatusBar style="light" />
-        {aba === "mes" && <MesScreen dados={dados} onAtualizar={atualizar} onExcluir={handleExcluir} onEditar={handleEditar} />}
-        {aba === "novo" && (
-          <NovoScreen
-            dados={dados}
-            onSalvar={(d) => { setEditando(null); atualizar(d) }}
-            editando={editando}
-            onCancelarEdicao={handleVoltarEdicao}
-          />
-        )}
-        {aba === "extrato" && <ExtratoScreen dados={dados} onExcluir={handleExcluir} onEditar={handleEditar} />}
-        <TabBar aba={aba} onChange={setAba} />
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <GestureHandlerRootView className="flex-1">
+      <SafeAreaProvider>
+        <SafeAreaView className="flex-1 bg-bg" edges={["top"]}>
+          <StatusBar style="light" />
+          <SwipeableArea onSwipe={handleTrocarAba}>
+            {aba === "mes" && <MesScreen dados={dados} onAtualizar={atualizar} onExcluir={handleExcluir} onEditar={handleEditar} />}
+            {aba === "novo" && (
+              <NovoScreen
+                dados={dados}
+                onSalvar={(d) => { setEditando(null); atualizar(d) }}
+                editando={editando}
+                onCancelarEdicao={handleVoltarEdicao}
+              />
+            )}
+            {aba === "extrato" && <ExtratoScreen dados={dados} onExcluir={handleExcluir} onEditar={handleEditar} />}
+          </SwipeableArea>
+          <TabBar aba={aba} onChange={setAba} />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }
