@@ -2,6 +2,7 @@
   "expo": {
     "name": "Organizador de Finanças",
     "slug": "organizador-financas",
+    "owner": "lucassfelipes-team",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,9 +11,10 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.lucassfelipes.team.organizadorfinancas",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0f0f0f"
       },
       "predictiveBackGestureEnabled": false
     },
