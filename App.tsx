@@ -58,14 +58,14 @@ export default function App() {
   if (!pronto)
     return (
       <SafeAreaProvider>
-        <SafeAreaView className="flex-1 bg-light" />
+        <SafeAreaView className="flex-1 bg-bg" />
       </SafeAreaProvider>
     )
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView className="flex-1 bg-light" edges={["top"]}>
-        <StatusBar style="dark" />
+      <SafeAreaView className="flex-1 bg-bg" edges={["top"]}>
+        <StatusBar style="light" />
         {aba === "mes" && <MesScreen dados={dados} onAtualizar={atualizar} onExcluir={handleExcluir} onEditar={handleEditar} />}
         {aba === "novo" && (
           <NovoScreen

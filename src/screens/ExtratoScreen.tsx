@@ -44,44 +44,46 @@ export default function ExtratoScreen({ dados, onExcluir, onEditar }: Props) {
   }
 
   return (
-    <View className="flex-1 p-4">
-      <Text className="text-xl font-bold mb-3">Extrato</Text>
+    <View className="flex-1 p-5">
+      <Text className="text-xl font-bold mb-4 text-white">Extrato</Text>
 
-      <View className="flex-row items-end mb-1">
-        <View className="flex-1 mr-2">
-          <Text className="text-xs text-gray-500 mb-1">De</Text>
+      <View className="flex-row items-end mb-2 gap-2">
+        <View className="flex-1">
+          <Text className="text-xs text-secondary mb-1.5">De</Text>
           <TextInput
             value={dataInicio}
             onChangeText={setDataInicio}
             placeholder="AAAA-MM-DD"
+            placeholderTextColor="#6b7280"
             autoCapitalize="none"
             keyboardType="numbers-and-punctuation"
-            className={`border rounded p-2 bg-white text-sm ${inicioOk ? "border-gray-300" : "border-danger"}`}
+            className={`border rounded-xl p-2.5 bg-bg text-white text-sm ${inicioOk ? "border-border" : "border-danger"}`}
           />
         </View>
-        <View className="flex-1 ml-2">
-          <Text className="text-xs text-gray-500 mb-1">Até</Text>
+        <View className="flex-1">
+          <Text className="text-xs text-secondary mb-1.5">Até</Text>
           <TextInput
             value={dataFim}
             onChangeText={setDataFim}
             placeholder="AAAA-MM-DD"
+            placeholderTextColor="#6b7280"
             autoCapitalize="none"
             keyboardType="numbers-and-punctuation"
-            className={`border rounded p-2 bg-white text-sm ${fimOk ? "border-gray-300" : "border-danger"}`}
+            className={`border rounded-xl p-2.5 bg-bg text-white text-sm ${fimOk ? "border-border" : "border-danger"}`}
           />
         </View>
       </View>
       {(!inicioOk || !fimOk) && (
-        <Text className="text-danger text-xs mb-1">Formato inválido — use AAAA-MM-DD (ex.: 2026-09-07)</Text>
+        <Text className="text-danger text-xs mb-2">Formato inválido — use AAAA-MM-DD (ex.: 2026-09-07)</Text>
       )}
       <Pressable onPress={limpar} className="self-end mb-3">
-        <Text className="text-primary text-xs">Últimos 30 dias</Text>
+        <Text className="text-primary text-xs font-medium">Últimos 30 dias</Text>
       </Pressable>
 
       <FlatList
         data={linhas}
         keyExtractor={(l) => l.id}
-        ListEmptyComponent={<Text className="text-gray-400 text-center mt-8">Nenhum lançamento no período</Text>}
+        ListEmptyComponent={<Text className="text-secondary text-center mt-8">Nenhum lançamento no período</Text>}
         renderItem={({ item }) => <LinhaLancamento item={item} onExcluir={onExcluir} onEditar={onEditar} />}
       />
     </View>

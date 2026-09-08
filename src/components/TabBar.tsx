@@ -12,14 +12,14 @@ const ABAS: { chave: Aba; rotulo: string }[] = [
 export default function TabBar({ aba, onChange }: { aba: Aba; onChange: (a: Aba) => void }) {
   const insets = useSafeAreaInsets()
   return (
-    <View className="flex-row border-t border-gray-200 bg-white" style={{ paddingBottom: insets.bottom }}>
+    <View className="flex-row border-t border-border bg-surface" style={{ paddingBottom: insets.bottom }}>
       {ABAS.map((a) => (
         <Pressable
           key={a.chave}
           onPress={() => onChange(a.chave)}
           className={`flex-1 py-3 ${aba === a.chave ? "border-t-2 border-primary" : ""}`}
         >
-          <Text className={`text-center font-medium ${aba === a.chave ? "text-primary" : "text-gray-500"}`}>
+          <Text className={`text-center font-medium ${aba === a.chave ? "text-primary" : "text-secondary"}`}>
             {a.rotulo}
           </Text>
         </Pressable>

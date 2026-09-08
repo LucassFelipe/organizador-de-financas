@@ -20,23 +20,23 @@ export default function LinhaLancamento({ item, saldoRestante, onExcluir, onEdit
   }
 
   return (
-    <Pressable onPress={pressionar} className="bg-white rounded border border-gray-200 p-3 mb-2">
+    <Pressable onPress={pressionar} className="bg-surface rounded-2xl border border-border p-4 mb-3">
       <View className="flex-row justify-between items-center">
-        <View className="flex-1 mr-2">
-          <Text className="font-medium">
+        <View className="flex-1 mr-3">
+          <Text className="font-semibold text-white text-base">
             {item.nome}
             {item.parcela ? ` (parcela ${item.parcela})` : ""}
           </Text>
-          {item.descricao ? <Text className="text-gray-500 text-xs">{item.descricao}</Text> : null}
+          {item.descricao ? <Text className="text-secondary text-xs mt-0.5">{item.descricao}</Text> : null}
         </View>
-        <Text className={item.ehEntrada ? "text-success font-bold" : "text-danger font-bold"}>
+        <Text className={item.ehEntrada ? "text-success font-bold text-base" : "text-danger font-bold text-base"}>
           {formatarBRL(item.ehEntrada ? item.valor : -item.valor)}
         </Text>
       </View>
-      <View className="flex-row justify-between items-center mt-1">
-        <Text className="text-gray-500 text-xs">{item.data}</Text>
+      <View className="flex-row justify-between items-center mt-2">
+        <Text className="text-secondary text-xs">{item.data}</Text>
         {saldoRestante !== undefined && (
-          <Text className="text-gray-400 text-xs">Saldo: {formatarBRL(saldoRestante)}</Text>
+          <Text className="text-secondary text-xs">Saldo: {formatarBRL(saldoRestante)}</Text>
         )}
       </View>
     </Pressable>

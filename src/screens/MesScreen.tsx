@@ -68,55 +68,55 @@ export default function MesScreen({ dados, onAtualizar, onExcluir, onEditar }: P
   }
 
   return (
-    <View className="flex-1 p-4">
-      <View className="flex-row items-center justify-between mb-4">
-        <Pressable onPress={() => setMes(mudarMes(mes, -1))} className="px-4 py-2 bg-secondary rounded">
+    <View className="flex-1 p-5">
+      <View className="flex-row items-center justify-between mb-5">
+        <Pressable onPress={() => setMes(mudarMes(mes, -1))} className="px-4 py-2 bg-surface rounded-xl border border-border">
           <Text className="text-white font-bold">◀</Text>
         </Pressable>
-        <Text className="text-lg font-bold">{formatarMes(mes)}</Text>
-        <Pressable onPress={() => setMes(mudarMes(mes, 1))} className="px-4 py-2 bg-secondary rounded">
+        <Text className="text-lg font-bold text-white">{formatarMes(mes)}</Text>
+        <Pressable onPress={() => setMes(mudarMes(mes, 1))} className="px-4 py-2 bg-surface rounded-xl border border-border">
           <Text className="text-white font-bold">▶</Text>
         </Pressable>
       </View>
 
-      <View className="bg-primary rounded p-4 mb-4">
-        <Text className="text-white text-sm">Saldo restante</Text>
-        <Text className="text-white text-3xl font-bold">{formatarBRL(saldoAcumulado(dados, mes))}</Text>
+      <View className="bg-primary/20 rounded-2xl p-5 mb-5">
+        <Text className="text-primary text-sm font-medium">Saldo restante</Text>
+        <Text className="text-white text-3xl font-bold mt-1">{formatarBRL(saldoAcumulado(dados, mes))}</Text>
       </View>
 
-      <View className="flex-row mb-4">
-        <View className="bg-white rounded border border-gray-200 p-3 flex-1 mr-2">
-          <Text className="text-gray-500 text-xs">Entradas</Text>
-          <Text className="font-bold text-success">{formatarBRL(entradas)}</Text>
+      <View className="flex-row mb-5 gap-3">
+        <View className="bg-surface rounded-2xl border border-border p-4 flex-1">
+          <Text className="text-secondary text-xs">Entradas</Text>
+          <Text className="font-bold text-success text-base mt-1">{formatarBRL(entradas)}</Text>
         </View>
-        <View className="bg-white rounded border border-gray-200 p-3 flex-1 ml-2">
-          <Text className="text-gray-500 text-xs">Gastos</Text>
-          <Text className="font-bold text-danger">{formatarBRL(gastos)}</Text>
+        <View className="bg-surface rounded-2xl border border-border p-4 flex-1">
+          <Text className="text-secondary text-xs">Gastos</Text>
+          <Text className="font-bold text-danger text-base mt-1">{formatarBRL(gastos)}</Text>
         </View>
       </View>
 
-      <View className="bg-white rounded border border-gray-200 p-3 mb-4">
+      <View className="bg-surface rounded-2xl border border-border p-4 mb-5">
         <View className="flex-row items-center justify-between">
-          <Text className="text-gray-500 text-xs">Salário base</Text>
+          <Text className="text-secondary text-xs">Salário base</Text>
           {salario ? (
             <Text className="font-bold text-success">{formatarBRL(salario)}</Text>
           ) : (
             <Pressable onPress={() => setEditandoSalario(true)}>
-              <Text className="text-primary text-xs">Configurar</Text>
+              <Text className="text-primary text-xs font-medium">Configurar</Text>
             </Pressable>
           )}
         </View>
         {!salario && editandoSalario && (
-          <View className="flex-row items-center mt-2">
-            <TextInput value={inputSalario} onChangeText={setInputSalario} placeholder="0,00" keyboardType="decimal-pad" className="border border-gray-300 rounded p-2 flex-1 mr-2 bg-white" />
-            <Pressable onPress={salvarSalarioBase} className="bg-primary px-3 py-2 rounded">
-              <Text className="text-white text-sm">OK</Text>
+          <View className="flex-row items-center mt-3">
+            <TextInput value={inputSalario} onChangeText={setInputSalario} placeholder="0,00" placeholderTextColor="#6b7280" keyboardType="decimal-pad" className="border border-border rounded-xl p-2.5 flex-1 mr-2 bg-bg text-white" />
+            <Pressable onPress={salvarSalarioBase} className="bg-primary px-4 py-2.5 rounded-xl">
+              <Text className="text-white text-sm font-bold">OK</Text>
             </Pressable>
           </View>
         )}
         {salario && !temSalario && (
-          <Pressable onPress={aplicarSalario} className="bg-success/10 rounded p-2 mt-2">
-            <Text className="text-success text-sm text-center">Adicionar salário neste mês</Text>
+          <Pressable onPress={aplicarSalario} className="bg-success/10 rounded-xl p-3 mt-3">
+            <Text className="text-success text-sm text-center font-medium">Adicionar salário neste mês</Text>
           </Pressable>
         )}
       </View>
@@ -124,7 +124,7 @@ export default function MesScreen({ dados, onAtualizar, onExcluir, onEditar }: P
       <FlatList
         data={linhas}
         keyExtractor={(l) => l.id}
-        ListEmptyComponent={<Text className="text-gray-400 text-center mt-8">Nenhum lançamento neste mês</Text>}
+        ListEmptyComponent={<Text className="text-secondary text-center mt-8">Nenhum lançamento neste mês</Text>}
         renderItem={({ item, index }) => <LinhaLancamento item={item} saldoRestante={saldos[index]} onExcluir={onExcluir} onEditar={onEditar} />}
       />
     </View>

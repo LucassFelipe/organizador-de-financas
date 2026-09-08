@@ -86,90 +86,95 @@ export default function NovoScreen({ dados, onSalvar, editando, onCancelarEdicao
   const campoErro = (chave: string) => erros[chave] ? <Text className="text-danger mt-1 text-sm">{erros[chave]}</Text> : null
 
   return (
-    <ScrollView className="flex-1 p-4" keyboardShouldPersistTaps="handled">
-      <View className="flex-row items-center justify-between mb-4">
-        <Text className="text-xl font-bold">{editando ? "Editar lançamento" : "Novo lançamento"}</Text>
+    <ScrollView className="flex-1 p-5" keyboardShouldPersistTaps="handled">
+      <View className="flex-row items-center justify-between mb-5">
+        <Text className="text-xl font-bold text-white">{editando ? "Editar lançamento" : "Novo lançamento"}</Text>
         {editando && onCancelarEdicao && (
-          <Pressable onPress={onCancelarEdicao} className="bg-secondary px-3 py-1 rounded">
-            <Text className="text-white text-sm">Cancelar</Text>
+          <Pressable onPress={onCancelarEdicao} className="bg-surface px-4 py-2 rounded-xl border border-border">
+            <Text className="text-secondary text-sm">Cancelar</Text>
           </Pressable>
         )}
       </View>
 
-      <View className="flex-row mb-4">
+      <View className="flex-row mb-5 rounded-xl overflow-hidden border border-border">
         <Pressable
           onPress={() => setEhEntrada(true)}
-          className={`flex-1 py-2 rounded-l border ${ehEntrada ? "bg-primary border-primary" : "bg-white border-gray-300"}`}
+          className={`flex-1 py-3 ${ehEntrada ? "bg-success" : "bg-surface"}`}
         >
-          <Text className={`text-center font-bold ${ehEntrada ? "text-white" : "text-gray-600"}`}>Entrada</Text>
+          <Text className={`text-center font-bold ${ehEntrada ? "text-white" : "text-secondary"}`}>Entrada</Text>
         </Pressable>
         <Pressable
           onPress={() => setEhEntrada(false)}
-          className={`flex-1 py-2 rounded-r border ${!ehEntrada ? "bg-primary border-primary" : "bg-white border-gray-300"}`}
+          className={`flex-1 py-3 ${!ehEntrada ? "bg-danger" : "bg-surface"}`}
         >
-          <Text className={`text-center font-bold ${!ehEntrada ? "text-white" : "text-gray-600"}`}>Gasto</Text>
+          <Text className={`text-center font-bold ${!ehEntrada ? "text-white" : "text-secondary"}`}>Gasto</Text>
         </Pressable>
       </View>
 
-      <Text className="mb-1">Nome da movimentação *</Text>
+      <Text className="mb-2 text-white font-medium">Nome da movimentação *</Text>
       <TextInput
         value={nome}
         onChangeText={setNome}
         placeholder="Ex.: Salário, Mercado, Celular"
-        className="border border-gray-300 rounded p-3 mb-1 bg-white"
+        placeholderTextColor="#6b7280"
+        className="border border-border rounded-xl p-3 mb-1 bg-bg text-white"
       />
       {campoErro("nome")}
 
-      <Text className="mb-1 text-gray-500">Descrição (opcional)</Text>
+      <Text className="mb-2 text-secondary">Descrição (opcional)</Text>
       <TextInput
         value={descricao}
         onChangeText={setDescricao}
         placeholder="Detalhes adicionais"
-        className="border border-gray-300 rounded p-3 mb-3 bg-white"
+        placeholderTextColor="#6b7280"
+        className="border border-border rounded-xl p-3 mb-4 bg-bg text-white"
       />
 
-      <Text className="mb-1">Valor (R$)</Text>
+      <Text className="mb-2 text-white font-medium">Valor (R$)</Text>
       <TextInput
         value={valor}
         onChangeText={setValor}
         placeholder="0,00"
+        placeholderTextColor="#6b7280"
         keyboardType="decimal-pad"
-        className="border border-gray-300 rounded p-3 mb-3 bg-white"
+        className="border border-border rounded-xl p-3 mb-4 bg-bg text-white"
       />
       {campoErro("valor")}
 
-      <Text className="mb-1">Data</Text>
+      <Text className="mb-2 text-white font-medium">Data</Text>
       <TextInput
         value={data}
         onChangeText={setData}
         placeholder="AAAA-MM-DD"
+        placeholderTextColor="#6b7280"
         autoCapitalize="none"
-        className="border border-gray-300 rounded p-3 mb-3 bg-white"
+        className="border border-border rounded-xl p-3 mb-4 bg-bg text-white"
       />
       {campoErro("data")}
 
       {!ehEntrada && (
-        <View className="flex-row items-center justify-between mb-3">
-          <Text>Parcelado</Text>
+        <View className="flex-row items-center justify-between mb-4 bg-surface rounded-xl border border-border p-4">
+          <Text className="text-white">Parcelado</Text>
           <Switch value={parcelado} onValueChange={setParcelado} />
         </View>
       )}
 
       {!ehEntrada && parcelado && (
-        <View className="mb-4">
-          <Text className="mb-1">Número de parcelas</Text>
+        <View className="mb-5">
+          <Text className="mb-2 text-white font-medium">Número de parcelas</Text>
           <TextInput
             value={parcelas}
             onChangeText={setParcelas}
             keyboardType="number-pad"
-            className="border border-gray-300 rounded p-3 mb-3 bg-white"
+            placeholderTextColor="#6b7280"
+            className="border border-border rounded-xl p-3 mb-4 bg-bg text-white"
           />
           {campoErro("parcelas")}
         </View>
       )}
 
-      <Pressable onPress={salvar} className="bg-primary py-3 rounded mb-4">
-        <Text className="text-white text-center font-bold">Salvar</Text>
+      <Pressable onPress={salvar} className="bg-primary py-4 rounded-xl mb-5">
+        <Text className="text-white text-center font-bold text-base">Salvar</Text>
       </Pressable>
     </ScrollView>
   )
