@@ -13,6 +13,7 @@ import {
   somaEntradasDoMes,
   somaGastosDoMes,
   temSalarioNoMes,
+  todosMeses,
 } from "../lib/financas"
 import type { Dados, Lancamento } from "../lib/financas"
 
@@ -35,6 +36,15 @@ export default function MesScreen({ dados, onAtualizar, onExcluir, onEditar }: P
   const [inputSalario, setInputSalario] = useState("")
 
   const linhas = gerarExtrato(dados).filter((l) => mesDeData(l.data) === mes)
+
+  const anteriores = todosMeses(dados)
+    .filter((m) => m < mes)
+    .reduce((s, m) => s + somaEntradasDoMes(dados, m) - somaGastosDoMes(dados, m), 0)
+  let acumulado = Math.round(anteriores * 100) / 100
+  const saldos = linhas.map((l) => {
+    acumulado += l.ehEntrada ? l.valor : -l.valor
+    return Math.round(acumulado * 100) / 100
+  })
   const entradas = somaEntradasDoMes(dados, mes)
   const gastos = somaGastosDoMes(dados, mes)
   const temSalario = temSalarioNoMes(dados, mes)
@@ -115,7 +125,7 @@ export default function MesScreen({ dados, onAtualizar, onExcluir, onEditar }: P
         data={linhas}
         keyExtractor={(l) => l.id}
         ListEmptyComponent={<Text className="text-gray-400 text-center mt-8">Nenhum lançamento neste mês</Text>}
-        renderItem={({ item }) => <LinhaLancamento item={item} onExcluir={onExcluir} onEditar={onEditar} />}
+        renderItem={({ item, index }) => <LinhaLancamento item={item} saldoRestante={saldos[index]} onExcluir={onExcluir} onEditar={onEditar} />}
       />
     </View>
   )

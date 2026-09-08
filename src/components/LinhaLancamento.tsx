@@ -4,11 +4,12 @@ import type { Lancamento } from "../lib/financas"
 
 type Props = {
   item: Lancamento
+  saldoRestante?: number
   onExcluir?: (lancamento: Lancamento) => void
   onEditar?: (lancamento: Lancamento) => void
 }
 
-export default function LinhaLancamento({ item, onExcluir, onEditar }: Props) {
+export default function LinhaLancamento({ item, saldoRestante, onExcluir, onEditar }: Props) {
   const pressionar = () => {
     if (!onExcluir && !onEditar) return
     const opcoes: { text: string; onPress?: () => void; style?: "cancel" | "destructive" }[] = []
@@ -32,7 +33,12 @@ export default function LinhaLancamento({ item, onExcluir, onEditar }: Props) {
           {formatarBRL(item.ehEntrada ? item.valor : -item.valor)}
         </Text>
       </View>
-      <Text className="text-gray-500 text-xs mt-1">{item.data}</Text>
+      <View className="flex-row justify-between items-center mt-1">
+        <Text className="text-gray-500 text-xs">{item.data}</Text>
+        {saldoRestante !== undefined && (
+          <Text className="text-gray-400 text-xs">Saldo: {formatarBRL(saldoRestante)}</Text>
+        )}
+      </View>
     </Pressable>
   )
 }
