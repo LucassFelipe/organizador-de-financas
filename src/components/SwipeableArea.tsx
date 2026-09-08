@@ -1,6 +1,6 @@
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
-import { View } from "react-native"
+import { useRef } from "react"
+import { Animated, View } from "react-native"
 
 type Props = {
   children: React.ReactNode
@@ -8,27 +8,22 @@ type Props = {
 }
 
 export default function SwipeableArea({ children, onSwipe }: Props) {
-  const translateX = useSharedValue(0)
+  const tx = useRef(new Animated.Value(0)).current
 
-  const estilo = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }))
-
-  const gesto = Gesture.Pan()
-    .activeOffsetX([-30, 30])
+  const g = Gesture.Pan()
     .onUpdate((e) => {
-      translateX.value = e.translationX * 0.3
+      tx.setValue(e.translationX * 0.4)
     })
     .onEnd((e) => {
-      if (e.translationX < -50) onSwipe(1)
-      else if (e.translationX > 50) onSwipe(-1)
-      translateX.value = withTiming(0, { duration: 200 })
+      if (e.translationX < -60) onSwipe(1)
+      else if (e.translationX > 60) onSwipe(-1)
+      Animated.timing(tx, { toValue: 0, duration: 150, useNativeDriver: true }).start()
     })
 
   return (
-    <GestureDetector gesture={gesto}>
+    <GestureDetector gesture={g}>
       <View className="flex-1">
-        <Animated.View style={estilo} className="flex-1">
+        <Animated.View style={{ transform: [{ translateX: tx }] }} className="flex-1">
           {children}
         </Animated.View>
       </View>
