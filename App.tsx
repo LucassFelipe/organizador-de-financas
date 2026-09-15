@@ -3,7 +3,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useEffect, useState } from "react"
 import { StatusBar } from "expo-status-bar"
 import * as NavigationBar from "expo-navigation-bar"
-import setNavigationBarColor from "react-native-navigation-bar-color"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 import { Alert, Platform } from "react-native"
@@ -23,10 +22,7 @@ export default function App() {
   const [editando, setEditando] = useState<Lancamento | null>(null)
 
   useEffect(() => {
-    if (Platform.OS === "android") {
-      NavigationBar.setStyle("dark")
-      setNavigationBarColor("#0f0f0f")
-    }
+    if (Platform.OS === "android") NavigationBar.setStyle("dark")
     AsyncStorage.getItem(STORAGE_KEY)
       .then((texto) => setDados(carregarDados(texto)))
       .catch(() => {
