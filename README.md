@@ -1,15 +1,15 @@
-# Organizador de Financas
+# Organizador de Finanças
 
-Aplicativo mobile para controle financeiro pessoal, developed with Expo (React Native) + NativeWind.
+Aplicativo mobile para controle financeiro pessoal, desenvolvido com Expo (React Native) + NativeWind.
 
 ## Funcionalidades
 
-- **Saldo acumulado** por mes e por movimentacao
-- **Lancamentos** com nome + descricao opcional
-- **Parcelas** derivadas de registro unico (nao duplica)
-- **Editar/excluir** via toque em qualquer lancamento
-- **Filtro por periodo** no extrato com validacao visual
-- **Salario base** configuravel, editavel e removivel
+- **Saldo acumulado** por mês e por movimentação
+- **Lançamentos** com nome + descrição opcional
+- **Parcelas** derivadas de registro único (não duplica)
+- **Editar/excluir** via toque em qualquer lançamento
+- **Filtro por período** no extrato com validação visual
+- **Salário base** configurável, editável e removível
 - **Gesto horizontal** para alternar entre abas
 - **Tema escuro** com interface moderna
 
@@ -23,7 +23,7 @@ Aplicativo mobile para controle financeiro pessoal, developed with Expo (React N
 ## Como rodar
 
 ```bash
-# Instalar dependencias
+# Instalar dependências
 npm install
 
 # Iniciar desenvolvimento
@@ -39,13 +39,13 @@ npx eas build -p android --profile preview
 src/
   components/
     TabBar.tsx          # Barra de abas inferior
-    LinhaLancamento.tsx  # Linha de lancamento no extrato
+    LinhaLancamento.tsx  # Linha de lançamento no extrato
     SwipeableArea.tsx    # Gesto horizontal entre abas
   screens/
-    MesScreen.tsx       # Visao mensal com saldo e lancamentos
-    NovoScreen.tsx      # Formulario de criar/editar lancamento
-    ExtratoScreen.tsx   # Extrato cronologico com filtros
+    MesScreen.tsx       # Visão mensal com saldo e lançamentos
+    NovoScreen.tsx      # Formulário de criar/editar lançamento
+    ExtratoScreen.tsx   # Extrato cronológico com filtros
   lib/
-    financas.ts         # Logica financeira pura
-    storage.ts          # Serializacao com AsyncStorage
+    financas.ts         # Lógica financeira pura
+    storage.ts          # Serialização com AsyncStorage
 ```
