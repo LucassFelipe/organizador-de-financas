@@ -95,29 +95,24 @@ export default function MesScreen({ dados, onAtualizar, onExcluir, onEditar }: P
         </View>
       </View>
 
-      <View className="bg-surface rounded-2xl border border-border p-4 mb-5">
+      <Pressable
+        onLongPress={() => {
+          if (!salario) { setEditandoSalario(true); return }
+          const opcoes: { text: string; onPress?: () => void; style?: "cancel" | "destructive" }[] = [
+            { text: "Editar", onPress: () => { setEditandoSalario(true); setInputSalario(String(salario)) } },
+            { text: "Remover", style: "destructive", onPress: () => onAtualizar?.({ ...dados, salarioBase: undefined }) },
+            { text: "Cancelar", style: "cancel" },
+          ]
+          Alert.alert("Salário base", formatarBRL(salario), opcoes)
+        }}
+        className="bg-surface rounded-2xl border border-border p-4 mb-5"
+      >
         <View className="flex-row items-center justify-between">
           <Text className="text-secondary text-xs">Salário base</Text>
-          {salario && !editandoSalario && (
-            <View className="flex-row items-center gap-3">
-              <Text className="font-bold text-success">{formatarBRL(salario)}</Text>
-              <Pressable onPress={() => { setEditandoSalario(true); setInputSalario(String(salario)) }}>
-                <Text className="text-primary text-xs font-medium">Editar</Text>
-              </Pressable>
-              <Pressable onPress={() => {
-                Alert.alert("Remover salário", "Deseja remover o salário base?", [
-                  { text: "Cancelar", style: "cancel" },
-                  { text: "Remover", style: "destructive", onPress: () => onAtualizar?.({ ...dados, salarioBase: undefined }) },
-                ])
-              }}>
-                <Text className="text-danger text-xs font-medium">Remover</Text>
-              </Pressable>
-            </View>
-          )}
-          {!salario && !editandoSalario && (
-            <Pressable onPress={() => setEditandoSalario(true)}>
-              <Text className="text-primary text-xs font-medium">Configurar</Text>
-            </Pressable>
+          {salario ? (
+            <Text className="font-bold text-success">{formatarBRL(salario)}</Text>
+          ) : (
+            <Text className="text-primary text-xs font-medium">Toque para configurar</Text>
           )}
         </View>
         {editandoSalario && (
@@ -136,7 +131,7 @@ export default function MesScreen({ dados, onAtualizar, onExcluir, onEditar }: P
             <Text className="text-success text-sm text-center font-medium">Adicionar salário neste mês</Text>
           </Pressable>
         )}
-      </View>
+      </Pressable>
 
       <FlatList
         data={linhas}
