@@ -98,23 +98,40 @@ export default function MesScreen({ dados, onAtualizar, onExcluir, onEditar }: P
       <View className="bg-surface rounded-2xl border border-border p-4 mb-5">
         <View className="flex-row items-center justify-between">
           <Text className="text-secondary text-xs">Salário base</Text>
-          {salario ? (
-            <Text className="font-bold text-success">{formatarBRL(salario)}</Text>
-          ) : (
+          {salario && !editandoSalario && (
+            <View className="flex-row items-center gap-3">
+              <Text className="font-bold text-success">{formatarBRL(salario)}</Text>
+              <Pressable onPress={() => { setEditandoSalario(true); setInputSalario(String(salario)) }}>
+                <Text className="text-primary text-xs font-medium">Editar</Text>
+              </Pressable>
+              <Pressable onPress={() => {
+                Alert.alert("Remover salário", "Deseja remover o salário base?", [
+                  { text: "Cancelar", style: "cancel" },
+                  { text: "Remover", style: "destructive", onPress: () => onAtualizar?.({ ...dados, salarioBase: undefined }) },
+                ])
+              }}>
+                <Text className="text-danger text-xs font-medium">Remover</Text>
+              </Pressable>
+            </View>
+          )}
+          {!salario && !editandoSalario && (
             <Pressable onPress={() => setEditandoSalario(true)}>
               <Text className="text-primary text-xs font-medium">Configurar</Text>
             </Pressable>
           )}
         </View>
-        {!salario && editandoSalario && (
+        {editandoSalario && (
           <View className="flex-row items-center mt-3">
             <TextInput value={inputSalario} onChangeText={setInputSalario} placeholder="0,00" placeholderTextColor="#6b7280" keyboardType="decimal-pad" className="border border-border rounded-xl p-2.5 flex-1 mr-2 bg-bg text-white" />
-            <Pressable onPress={salvarSalarioBase} className="bg-primary px-4 py-2.5 rounded-xl">
+            <Pressable onPress={salvarSalarioBase} className="bg-primary px-4 py-2.5 rounded-xl mr-2">
               <Text className="text-white text-sm font-bold">OK</Text>
+            </Pressable>
+            <Pressable onPress={() => { setEditandoSalario(false); setInputSalario("") }}>
+              <Text className="text-secondary text-sm">Cancelar</Text>
             </Pressable>
           </View>
         )}
-        {salario && !temSalario && (
+        {salario && !temSalario && !editandoSalario && (
           <Pressable onPress={aplicarSalario} className="bg-success/10 rounded-xl p-3 mt-3">
             <Text className="text-success text-sm text-center font-medium">Adicionar salário neste mês</Text>
           </Pressable>
