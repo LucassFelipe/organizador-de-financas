@@ -96,7 +96,7 @@ export default function MesScreen({ dados, onAtualizar, onExcluir, onEditar }: P
       </View>
 
       <Pressable
-        onLongPress={() => {
+        onPress={() => {
           if (!salario) { setEditandoSalario(true); return }
           const opcoes: { text: string; onPress?: () => void; style?: "cancel" | "destructive" }[] = [
             { text: "Editar", onPress: () => { setEditandoSalario(true); setInputSalario(String(salario)) } },
