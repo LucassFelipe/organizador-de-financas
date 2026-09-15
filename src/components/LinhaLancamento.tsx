@@ -16,7 +16,9 @@ export default function LinhaLancamento({ item, saldoRestante, onExcluir, onEdit
     if (onEditar) opcoes.push({ text: "Editar", onPress: () => onEditar(item) })
     if (onExcluir) opcoes.push({ text: "Excluir", style: "destructive", onPress: () => onExcluir(item) })
     opcoes.push({ text: "Cancelar", style: "cancel" })
-    Alert.alert(item.nome, item.parcela ? `Parcela ${item.parcela}` : undefined, opcoes)
+    const valor = formatarBRL(item.ehEntrada ? item.valor : -item.valor)
+    const subtitulo = [item.parcela ? `Parcela ${item.parcela}` : null, valor, item.data].filter(Boolean).join(" • ")
+    Alert.alert(item.nome, subtitulo, opcoes)
   }
 
   return (
